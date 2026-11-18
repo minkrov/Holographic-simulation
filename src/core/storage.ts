@@ -1,6 +1,6 @@
 import { uid, type Workspace } from './domain';
 
-const DB = 'orion-workbench';
+const DB = import.meta.env.MODE === 'pages' ? 'orion-workbench-demo' : 'orion-workbench';
 const KEY = 'workspace';
 const CHECKPOINT = 'checkpoint';
 export type StorageStatus = 'saved' | 'memory' | 'conflict';

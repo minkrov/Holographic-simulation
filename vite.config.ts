@@ -6,6 +6,7 @@ import { orionMiddleware } from './server/orion.mjs';
 export default defineConfig(({ mode }) => {
   const env = { ...loadEnv(mode, process.cwd(), ''), ...process.env };
   return {
+    base: mode === 'pages' ? './' : '/',
     plugins: [
       react(),
       {

@@ -15,6 +15,12 @@ npm run dev -- --host 127.0.0.1
 
 Open **http://127.0.0.1:5173**. For the production web build, run `npm run build` then `npm start` and open **http://127.0.0.1:4173**. `HOST` and `PORT` override the production server's bind address. No account, rendering service, or Orion credentials are required.
 
+## Public demo deployment
+
+`npm run build:demo` produces a static build in `dist/demo/` that works under a GitHub Pages project URL. It includes the reference enclosure and runs in local-engine mode. Imported files and reviews stay in the visitor’s browser; the demo has no Orion server connection.
+
+[Publish Orion demo](.github/workflows/orion-demo.yml) publishes only from `arena/964109c0-holographic-simulation`, after an owner selects **Settings → Pages → Source → GitHub Actions**. If Pages is not enabled, the workflow verifies the static build and skips deployment. To publish after changing that setting, re-run the latest **Publish Orion demo** workflow. An owner can unpublish the site in Pages settings.
+
 ## From model to review
 
 1. **Try the sample.** The initial *Bench enclosure* project shows a review for the mount plate. Open `M-014` to inspect the authored points behind **42.0 → 44.0 mm (+2.0 mm)**. Save or discard the preview. Saved views in the left pane reopen their camera, revisions, and evidence.

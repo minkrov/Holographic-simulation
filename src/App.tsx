@@ -81,6 +81,8 @@ import {
 import { Dialog, IconButton, Key, MenuRow, Popover, ResizeRail } from './ui/primitives';
 import { Viewport, type ViewportHandle } from './ui/Viewport';
 
+const STATIC_DEMO = import.meta.env.MODE === 'pages';
+const ORION_MARK = `${import.meta.env.BASE_URL}orion.svg`;
 const SAMPLE_INTENT = 'Compare these two revisions. Flag the hole spacing and save a review view.';
 const DEFAULT_SESSION: Session = { view: DEFAULT_VIEW };
 const time = () =>
@@ -157,7 +159,7 @@ export default function App() {
   if (!initial)
     return (
       <div className="boot">
-        <img src="/orion.svg" alt="" />
+        <img src={ORION_MARK} alt="" />
         <div>ORION</div>
         <span>Opening local workbench</span>
       </div>
@@ -223,6 +225,7 @@ function Workbench({ initial, available }: { initial: Workspace; available: bool
     : undefined;
   const reviewMatches = !!pin && JSON.stringify(pin) === JSON.stringify(view);
   const useConnector =
+    !STATIC_DEMO &&
     connector.mode === 'connector' &&
     !!connector.destination &&
     data.preferences.connectorDestination === connector.destination;
@@ -279,6 +282,7 @@ function Workbench({ initial, available }: { initial: Workspace; available: bool
   }, [compact, smallPanel, modal]);
 
   useEffect(() => {
+    if (STATIC_DEMO) return;
     const control = new AbortController();
     void fetch('/api/orion', { signal: control.signal, cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : null))
@@ -1381,7 +1385,7 @@ function Workbench({ initial, available }: { initial: Workspace; available: bool
     >
       <header className="topbar">
         <div className="brand">
-          <img src="/orion.svg" alt="" />
+          <img src={ORION_MARK} alt="" />
           <span>ORION</span>
         </div>
         <i className="brand-rule" />

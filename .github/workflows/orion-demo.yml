@@ -1,0 +1,55 @@
+name: Publish Orion demo
+
+on:
+  push:
+    branches: [arena/964109c0-holographic-simulation]
+  workflow_dispatch:
+
+concurrency:
+  group: orion-pages-demo
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'minkrov/Holographic-simulation' && github.ref == 'refs/heads/arena/964109c0-holographic-simulation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      pages-ready: ${{ steps.pages.outcome == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build:demo
+      - uses: actions/configure-pages@v5
+        id: pages
+        continue-on-error: true
+      - name: Explain how to enable deployment
+        if: steps.pages.outcome != 'success'
+        run: |
+          echo 'Orion demo built. To publish, select GitHub Actions in Settings → Pages, then re-run this workflow.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-pages-artifact@v4
+        if: steps.pages.outcome == 'success'
+        with:
+          path: dist/demo
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.pages-ready == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
